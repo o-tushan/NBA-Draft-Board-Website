@@ -5,6 +5,9 @@ import {
     TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
     Drawer, Typography, IconButton, Box, AppBar, Toolbar, Button
 } from '@mui/material';
+import {
+    Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const draftData = data.bio
@@ -52,9 +55,17 @@ function DraftBoard() {
     const rankingValues = rankingFields.map(field => matchingPlayer?.[field]).filter(val => val != null && !isNaN(val))
 
     const prospectRanking = rankingValues.length > 0 ? rankingValues.reduce((sum, val) => sum + val) / rankingValues.length : null
-    const matchingReports = reportData.filter(stat => stat.playerId === selectedPlayer?.playerId)
 
-    
+    const [customReports, setCustomReports] = useState([])
+    const [addDialogOpen, setAddDialogOpen] = useState(false)
+    const [selectedPlayerId, setSelectedPlayerId] = useState('')
+    const [reportText, setReportText] = useState('')
+    const [scoutName, setScoutName] = useState('')
+
+    const matchingReports = [
+        ...reportData.filter(stat => stat.playerId === selectedPlayer?.playerId),
+        ...customReports.filter(stat => stat.playerId === selectedPlayer?.playerId)
+    ];
 
     return (
         <>
@@ -64,7 +75,7 @@ function DraftBoard() {
                     <Typography variant = "h6" sx = {{flexGrow : 1}}>
                         Dallas Mavericks Draft Board
                     </Typography>
-                    <Button color = "inherit" onClick = {() => alert("Feature in progress")}>
+                    <Button color = "inherit" onClick = {() => setAddDialogOpen(true)}>
                         Add New Report
                     </Button>
                     <Button color = "inherit" onClick = {() => alert("Feature in progress")}>
@@ -292,6 +303,65 @@ function DraftBoard() {
                     </Box>
                 )}
             </Drawer>
+
+                {/*Dialog for the add scout report button*/}
+            <Dialog open = {addDialogOpen} onClose = {() => setAddDialogOpen(false)}>
+                <DialogTitle>Add Scouting Report</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        select label = "Player"
+                        fullWidth
+                        margin = "dense"
+                        value = {selectedPlayerId}
+                        onChange = {(e) => setSelectedPlayerId(e.target.value)}
+                    >
+                        {draftData.map((player) => (
+                            <MenuItem key = {player.playerId} value = {player.playerId}>
+                                {player.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        label = "Scout Name"
+                        fullWidth
+                        margin = "dense"
+                        value = {scoutName}
+                        onChange = {(e) => setScoutName(e.target.value)}
+                    />
+                    <TextField
+                        label = "Report"
+                        fullWidth
+                        margin = "dense"
+                        multiline
+                        rows = {4}
+                        value = {reportText}
+                        onChange = {(e) => setReportText(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick = {() => setAddDialogOpen(false)}>
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick = {() => {
+                            setCustomReports(prev => [...prev,
+                                {
+                                    playerId: selectedPlayerId,
+                                    scout: scoutName || 'Anonymous Executive',
+                                    report: reportText
+                                }
+                            ]);
+                            setSelectedPlayerId('');
+                            setScoutName('');
+                            setReportText('');
+                            setAddDialogOpen(false);
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </>
 
     );
