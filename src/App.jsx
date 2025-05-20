@@ -75,10 +75,18 @@ function DraftBoard() {
                     <Typography variant = "h6" sx = {{flexGrow : 1}}>
                         Dallas Mavericks Draft Board
                     </Typography>
-                    <Button color = "inherit" onClick = {() => setAddDialogOpen(true)}>
+                    <Button
+                        color = "inherit"
+                        variant = "outlined"
+                        sx = {{borderColor: 'black', color: 'black', mr: 5}}
+                        onClick = {() => setAddDialogOpen(true)}>
                         Add New Report
                     </Button>
-                    <Button color = "inherit" onClick = {() => alert("Feature in progress")}>
+                    <Button
+                        color = "inherit"
+                        variant = "outlined"
+                        sx = {{borderColor: 'black', color: 'black', mr: 3}}
+                        onClick = {() => alert("Feature in progress")}>
                         Filter players
                     </Button>
                 </Toolbar>
