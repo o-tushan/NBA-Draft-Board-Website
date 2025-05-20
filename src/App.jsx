@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import './App.css'
 import data from './intern_project_data.json'
 import {
-    TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
     Drawer, Typography, IconButton, Box, AppBar, Toolbar, Button
 } from '@mui/material';
 import {
@@ -15,7 +15,6 @@ const scoutData = data.scoutRankings
 const gameData = data.seasonLogs
 const rankingFields = ["ESPN Rank", "Sam Vecenie Rank", "Kevin O'Connor Rank", "Kyle Boone Rank", "Gary Parrish Rank"]
 const reportData = data.scoutingReports
-
 
 const calculateAge = (birthDate) => {
     const birth = new Date(birthDate)
@@ -92,23 +91,39 @@ function DraftBoard() {
                 </Toolbar>
             </AppBar>
 
+            {/*Title as well as the Table with the Draft Prospects*/}
             <Box sx={{ maxWidth: '800px', pb: 6, margin: '0 auto', mt: 3}}>
             <h1 style = {{textAlign : 'center'}}>2025 Draft Big Board</h1>
                 <TableContainer component = {Paper}>
-                    <table className = "draft-board">
-                        <TableHead style={{backgroundColor: '#E8E8E8'}}>
+                    <Table
+                        className = "draft-board"
+                        sx = {{
+                            borderCollapse: 'collapse',
+                            '& td, & th': {
+                                borderBottom: 'none',
+                            },
+                            '& tr': {
+                                borderBottom: 'none',
+                            }
+                        }}
+                    >
+                        <TableHead style={{borderBottom: 'none', borderRight: 'none', backgroundColor: '#E8E8E8'}}>
                             <TableRow>
                                 <TableCell sx={{ width: '10%'}}>Overall ranking</TableCell>
-                                <TableCell sx={{ width: '10%'}}>Name</TableCell>
-                                <TableCell sx={{ width: '30%'}}>Age</TableCell>
-                                <TableCell sx={{ width: '30%'}}>Height</TableCell>
-                                <TableCell sx={{ width: '20%'}}>Current Team</TableCell>
+                                <TableCell sx={{ width: '30%', mr: 5}}>Name</TableCell>
+                                <TableCell sx={{ width: '10%'}}>Age</TableCell>
+                                <TableCell sx={{ width: '20%'}}>Height</TableCell>
+                                <TableCell sx={{ width: '30%'}}>Current Team</TableCell>
                             </TableRow>
                         </TableHead>
 
                         <TableBody>
                             {draftData.map((player, index) => (
-                            <TableRow key={index} hover onClick={() => handleClick(player)} style={{cursor: 'pointer', backgroundColor: '#E8E8E8'}}>
+                            <TableRow
+                                key={index}
+                                hover
+                                onClick={() => handleClick(player)}
+                                style={{cursor: 'pointer', backgroundColor: index % 2 === 0 ? '#ffffff' : '#E8E8E8'}}>
                                 <TableCell sx={{ width: '10%'}}>{index + 1}</TableCell>
                                 <TableCell sx={{ width: '10%'}}>{player.name}</TableCell>
                                 <TableCell sx={{ width: '30%'}}>{calculateAge(player.birthDate)}</TableCell>
@@ -117,7 +132,7 @@ function DraftBoard() {
                             </TableRow>
                             ))}
                         </TableBody>
-                    </table>
+                    </Table>
                 </TableContainer>
 
             </Box>
