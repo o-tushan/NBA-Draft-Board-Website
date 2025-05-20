@@ -94,7 +94,15 @@ function DraftBoard() {
             {/*Title as well as the Table with the Draft Prospects*/}
             <Box sx={{ maxWidth: '800px', pb: 6, margin: '0 auto', mt: 3}}>
             <h1 style = {{textAlign : 'center'}}>2025 Draft Big Board</h1>
-                <TableContainer component = {Paper}>
+                <TableContainer
+                    component = {Paper}
+                    sx = {{
+                        border: '2px solid black',
+                        borderRadius: '30px',
+                        overflow: 'hidden',
+                    }}
+
+                >
                     <Table
                         className = "draft-board"
                         sx = {{
@@ -109,11 +117,11 @@ function DraftBoard() {
                     >
                         <TableHead style={{borderBottom: 'none', borderRight: 'none', backgroundColor: '#E8E8E8'}}>
                             <TableRow>
-                                <TableCell sx={{ width: '10%'}}>Overall ranking</TableCell>
-                                <TableCell sx={{ width: '30%', mr: 5}}>Name</TableCell>
+                                <TableCell sx={{ width: '10%', paddingLeft: '20px'}}>Overall ranking</TableCell>
+                                <TableCell sx={{ width: '30%', paddingLeft: '60px'}}>Name</TableCell>
                                 <TableCell sx={{ width: '10%'}}>Age</TableCell>
                                 <TableCell sx={{ width: '20%'}}>Height</TableCell>
-                                <TableCell sx={{ width: '30%'}}>Current Team</TableCell>
+                                <TableCell sx={{ width: '30%', paddingRight: '60px', textAlign: 'center'}}>Current Team</TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -124,11 +132,11 @@ function DraftBoard() {
                                 hover
                                 onClick={() => handleClick(player)}
                                 style={{cursor: 'pointer', backgroundColor: index % 2 === 0 ? '#ffffff' : '#E8E8E8'}}>
-                                <TableCell sx={{ width: '10%'}}>{index + 1}</TableCell>
-                                <TableCell sx={{ width: '10%'}}>{player.name}</TableCell>
-                                <TableCell sx={{ width: '30%'}}>{calculateAge(player.birthDate)}</TableCell>
-                                <TableCell sx={{ width: '30%'}}>{Math.floor(player.height / 12) + "' " + player.height % 12 + "\""}</TableCell>
-                                <TableCell sx={{ width: '20%'}}>{player.currentTeam}</TableCell>
+                                <TableCell sx={{ width: '10%', paddingLeft: '38px'}}>{index + 1}</TableCell>
+                                <TableCell sx={{ width: '10%', paddingLeft: '40px'}}>{player.name}</TableCell>
+                                <TableCell sx={{ width: '30%', paddingLeft: '20px'}}>{calculateAge(player.birthDate)}</TableCell>
+                                <TableCell sx={{ width: '30%', paddingLeft: '25px'}}>{Math.floor(player.height / 12) + "' " + player.height % 12 + "\""}</TableCell>
+                                <TableCell sx={{ width: '20%', paddingRight: ''}}>{player.currentTeam}</TableCell>
                             </TableRow>
                             ))}
                         </TableBody>
