@@ -4,9 +4,11 @@
   padding: 0;
   text-align: left;
   background: linear-gradient(#162D50, #0064B1 15%, #ffffff 15%);
-  background-image: url('./logo.png'), url('./logo.png');
-  background-position: left 40px top 100px, right 40px top 100px;
-  background-size: 100px, 100px;
+
+  background-image: url('./logo.png'), url('./logo.png'), linear-gradient(#162D50, #0064B1 15%, #ffffff 15%);
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-position: left 80px top 200px, right 80px top 200px, top;
+  background-size: 200px, 200px, cover;
 }
 
 .logo {

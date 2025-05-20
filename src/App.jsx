@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import './App.css'
 import data from './intern_project_data.json'
-import logo from './logo.jpg'
 import {
     TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
     Drawer, Typography, IconButton, Box, AppBar, Toolbar, Button
@@ -47,11 +46,15 @@ function DraftBoard() {
     const handleClose = () => {
         setSelectedPlayer(null);
     };
+
     const matchingPlayer = scoutData.find(stat => stat.playerId === selectedPlayer?.playerId);
     const matchingPlayerGS = gameData.find(stat => stat.playerId === selectedPlayer?.playerId && stat.League === "NCAA");
     const rankingValues = rankingFields.map(field => matchingPlayer?.[field]).filter(val => val != null && !isNaN(val))
+
     const prospectRanking = rankingValues.length > 0 ? rankingValues.reduce((sum, val) => sum + val) / rankingValues.length : null
     const matchingReports = reportData.filter(stat => stat.playerId === selectedPlayer?.playerId)
+
+    
 
     return (
         <>
