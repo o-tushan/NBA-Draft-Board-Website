@@ -6,7 +6,7 @@ import {
     Drawer, Typography, IconButton, Box, AppBar, Toolbar, Button
 } from '@mui/material';
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem
+    Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Autocomplete
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -66,6 +66,18 @@ function DraftBoard() {
         ...customReports.filter(stat => stat.playerId === selectedPlayer?.playerId)
     ];
 
+    const [filteredData, setFilteredData] = useState(draftData);
+    const [filterDialogOpen, setFilterDialogOpen] = useState(false);
+
+    const [showCollegeSelect, setShowCollegeSelect] = useState(false);
+    const [selectedCollege, setSelectedCollege] = useState('');
+    const collegeOptions = [...new Set(draftData.map(player => player.currentTeam).filter(Boolean))]
+
+    const [showLeagueSelect, setShowLeagueSelect] = useState(false);
+    const [selectedLeagueType, setSelectedLeagueType] = useState('');
+
+
+
     return (
         <>
             {/*Top Bar with buttons*/}
@@ -85,7 +97,8 @@ function DraftBoard() {
                         color = "inherit"
                         variant = "outlined"
                         sx = {{borderColor: 'black', color: 'black', mr: 3}}
-                        onClick = {() => alert("Feature in progress")}>
+                        onClick = {() => setFilterDialogOpen(true)}
+                    >
                         Filter players
                     </Button>
                 </Toolbar>
@@ -126,13 +139,15 @@ function DraftBoard() {
                         </TableHead>
 
                         <TableBody>
-                            {draftData.map((player, index) => (
+                            {filteredData.map((player, index) => (
                             <TableRow
                                 key={index}
                                 hover
                                 onClick={() => handleClick(player)}
                                 style={{cursor: 'pointer', backgroundColor: index % 2 === 0 ? '#ffffff' : '#E8E8E8'}}>
-                                <TableCell sx={{ width: '10%', paddingLeft: '38px'}}>{index + 1}</TableCell>
+                                <TableCell sx={{ width: '10%', paddingLeft: '38px'}}>
+                                    {draftData.findIndex(p => p.playerId === player.playerId) + 1}
+                                </TableCell>
                                 <TableCell sx={{ width: '10%', paddingLeft: '40px'}}>{player.name}</TableCell>
                                 <TableCell sx={{ width: '30%', paddingLeft: '20px'}}>{calculateAge(player.birthDate)}</TableCell>
                                 <TableCell sx={{ width: '30%', paddingLeft: '25px'}}>{Math.floor(player.height / 12) + "' " + player.height % 12 + "\""}</TableCell>
@@ -335,23 +350,21 @@ function DraftBoard() {
                 )}
             </Drawer>
 
-                {/*Dialog for the add scout report button*/}
+            {/*Dialog for the add scout report button*/}
             <Dialog open = {addDialogOpen} onClose = {() => setAddDialogOpen(false)}>
                 <DialogTitle>Add Scouting Report</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        select label = "Player"
-                        fullWidth
-                        margin = "dense"
-                        value = {selectedPlayerId}
-                        onChange = {(e) => setSelectedPlayerId(e.target.value)}
-                    >
-                        {draftData.map((player) => (
-                            <MenuItem key = {player.playerId} value = {player.playerId}>
-                                {player.name}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                    <Autocomplete
+                        options = {draftData}
+                        getOptionLabel = {(option) => option.name}
+                        value = {draftData.find(p => p.playerId === selectedPlayerId) || null}
+                        onChange = {(e, newValue) => {
+                            setSelectedPlayerId(newValue ? newValue.playerId : '');
+                        }}
+                        renderInput = {(params) => (
+                            <TextField {...params} label = "Player Name" margin = "dense" fullWidth />
+                        )}
+                    />
                     <TextField
                         label = "Scout Name"
                         fullWidth
@@ -390,6 +403,86 @@ function DraftBoard() {
                     >
                         Submit
                     </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/*This is the functionality for the 'Filter Players' button*/}
+            <Dialog open = {filterDialogOpen} onClose = {() => setFilterDialogOpen(false)}>
+                <DialogTitle>Filter Players</DialogTitle>
+                <DialogContent>
+                    {!showCollegeSelect && (
+                        <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+                            <Button
+                                variant = "contained"
+                                onClick = {() => setShowCollegeSelect(true)}
+                            >
+                                Filter by College
+                            </Button>
+
+                            <Button
+                                variant = "contained"
+                                onClick = {() => {
+                                    const filtered = draftData.filter(p => p.leagueType === "NCAA");
+                                    setFilteredData(filtered);
+                                    setFilterDialogOpen(false);
+                                }}
+                            >
+                                Filter by College/Professional
+                            </Button>
+                        </Box>
+                    )}
+
+                    {showCollegeSelect && (
+                        <Box sx = {{width: '300px', maxWidth: '100%'}}>
+                            <Autocomplete
+                                options = {collegeOptions}
+                                value = {selectedCollege || null}
+                                onChange = {(event, newValue) => setSelectedCollege(newValue || '')}
+                                renderInput = {(params) => (
+                                    <TextField {...params} label = "Select College" margin = "dense" fullWidth/>
+                                )}
+                            />
+                        </Box>
+                    )}
+                </DialogContent>
+
+                <DialogActions>
+                    {showCollegeSelect ? (
+                        <>
+                            <Button
+                                onClick = {() => {
+                                    setFilteredData(draftData.filter(p => p.currentTeam === selectedCollege));
+                                    setSelectedCollege('');
+                                    setShowCollegeSelect(false);
+                                    setFilterDialogOpen(false);
+                                }}
+                            >
+                                Apply
+                            </Button>
+                            <Button
+                                onClick = {() => {
+                                    setSelectedCollege('');
+                                    setShowCollegeSelect(false);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button
+                                onClick = {() => {
+                                    setFilteredData(draftData);
+                                    setFilterDialogOpen(false);
+                                }}
+                            >
+                                Clear Filter
+                            </Button>
+                            <Button onClick = {() => setFilterDialogOpen(false)}>
+                                Close
+                            </Button>
+                        </>
+                    )}
                 </DialogActions>
             </Dialog>
 
