@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import './App.css'
 import data from './intern_project_data.json'
+
+{/*Imports our MUI functionalities*/}
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
     Drawer, Typography, IconButton, Box, AppBar, Toolbar, Button
@@ -10,6 +12,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+{/*These lines allow us to get all of the info from the JSON file*/}
 const draftData = data.bio
 const scoutData = data.scoutRankings
 const gameData = data.seasonLogs
@@ -30,7 +33,6 @@ const calculateAge = (birthDate) => {
 
 
 function App() {
-  /*const [count, setCount] = useState(0)*/
 
   return (
       <div className = "App">
@@ -41,6 +43,7 @@ function App() {
 
 
 function DraftBoard() {
+    {/*These are used for all clicking functionalities*/}
     const [selectedPlayer, setSelectedPlayer] = useState(null);
     const handleClick = (player) => {
         setSelectedPlayer(player);
@@ -49,12 +52,15 @@ function DraftBoard() {
         setSelectedPlayer(null);
     };
 
+    {/*These are used to get the player stats for the table*/}
     const matchingPlayer = scoutData.find(stat => stat.playerId === selectedPlayer?.playerId);
     const matchingPlayerGS = gameData.find(stat => stat.playerId === selectedPlayer?.playerId && stat.League === "NCAA");
     const rankingValues = rankingFields.map(field => matchingPlayer?.[field]).filter(val => val != null && !isNaN(val))
 
+    {/*Used for the custom player analysis (top 5 pick, late first rounder, etc.)*/}
     const prospectRanking = rankingValues.length > 0 ? rankingValues.reduce((sum, val) => sum + val) / rankingValues.length : null
 
+    {/*These are used for creating a custom scouting report*/}
     const [customReports, setCustomReports] = useState([])
     const [addDialogOpen, setAddDialogOpen] = useState(false)
     const [selectedPlayerId, setSelectedPlayerId] = useState('')
@@ -66,13 +72,16 @@ function DraftBoard() {
         ...customReports.filter(stat => stat.playerId === selectedPlayer?.playerId)
     ];
 
+    {/*These are used for filtering players as well as the table*/}
     const [filteredData, setFilteredData] = useState(draftData);
     const [filterDialogOpen, setFilterDialogOpen] = useState(false);
 
+    {/*These are used for the filter by college*/}
     const [showCollegeSelect, setShowCollegeSelect] = useState(false);
     const [selectedCollege, setSelectedCollege] = useState('');
     const collegeOptions = [...new Set(draftData.map(player => player.currentTeam).filter(Boolean))]
 
+    {/*These are used for the filter by league type*/}
     const [showLeagueSelect, setShowLeagueSelect] = useState(false);
     const [selectedLeagueType, setSelectedLeagueType] = useState('');
 
@@ -83,7 +92,7 @@ function DraftBoard() {
             {/*Top Bar with buttons*/}
             <AppBar position = "static" color = "inherit" sx = {{mb: 3}}>
                 <Toolbar>
-                    <Typography variant = "h6" sx = {{flexGrow : 1}}>
+                    <Typography variant = "h5" sx = {{flexGrow : 1}}>
                         Dallas Mavericks Draft Board
                     </Typography>
                     <Button
@@ -410,22 +419,18 @@ function DraftBoard() {
             <Dialog open = {filterDialogOpen} onClose = {() => setFilterDialogOpen(false)}>
                 <DialogTitle>Filter Players</DialogTitle>
                 <DialogContent>
-                    {!showCollegeSelect && (
+                    {!showCollegeSelect && !showLeagueSelect && (
                         <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                             <Button
                                 variant = "contained"
                                 onClick = {() => setShowCollegeSelect(true)}
                             >
-                                Filter by College
+                                Filter by Team
                             </Button>
 
                             <Button
                                 variant = "contained"
-                                onClick = {() => {
-                                    const filtered = draftData.filter(p => p.leagueType === "NCAA");
-                                    setFilteredData(filtered);
-                                    setFilterDialogOpen(false);
-                                }}
+                                onClick = {() => setShowLeagueSelect(true)}
                             >
                                 Filter by College/Professional
                             </Button>
@@ -439,15 +444,57 @@ function DraftBoard() {
                                 value = {selectedCollege || null}
                                 onChange = {(event, newValue) => setSelectedCollege(newValue || '')}
                                 renderInput = {(params) => (
-                                    <TextField {...params} label = "Select College" margin = "dense" fullWidth/>
+                                    <TextField {...params} label = "Select Team" margin = "dense" fullWidth/>
                                 )}
                             />
+                        </Box>
+                    )}
+
+                    {showLeagueSelect && (
+                        <Box sx = {{width: '300px', maxWidth: '100%'}}>
+                            <TextField
+                                select
+                                label = "Select Experience Type"
+                                fullWidth
+                                margin = "dense"
+                                value = {selectedLeagueType}
+                                onChange = {(e) => setSelectedLeagueType(e.target.value)}
+                            >
+                                <MenuItem value = "NCAA">NCAA</MenuItem>
+                                <MenuItem value = "Pro">Professional</MenuItem>
+                            </TextField>
                         </Box>
                     )}
                 </DialogContent>
 
                 <DialogActions>
-                    {showCollegeSelect ? (
+                    {showLeagueSelect ? (
+                        <>
+                            <Button
+                                onClick = {() => {
+                                    const filtered = draftData.filter(p =>
+                                        selectedLeagueType === 'NCAA'
+                                        ? p.leagueType === 'NCAA'
+                                        : p.leagueType !== 'NCAA'
+                                    );
+                                    setFilteredData(filtered);
+                                    setSelectedLeagueType('');
+                                    setShowLeagueSelect(false);
+                                    setFilterDialogOpen(false);
+                                }}
+                            >
+                                Apply
+                            </Button>
+                            <Button
+                                onClick = {() => {
+                                    setSelectedLeagueType('');
+                                    setShowLeagueSelect(false);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </>
+                    ) : showCollegeSelect ? (
                         <>
                             <Button
                                 onClick = {() => {
