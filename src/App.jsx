@@ -12,7 +12,54 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-{/*These lines allow us to get all of the info from the JSON file*/}
+
+/**
+ * @typedef {Object} Player
+ * @property {string} playerId
+ * @property {string} name
+ * @property {string} birthDate
+ * @property {number} height
+ * @property {number} weight
+ * @property {string} currentTeam
+ * @property {string} homeCountry
+ * @property {string} leagueType
+ * @property {string} [photoUrl]
+ */
+/**
+ * @typedef {Object} ScoutingReport
+ * @property {string} playerId
+ * @property {string} scout
+ * @property {string} report
+ */
+/**
+ * @typedef {Object} ScoutRanking
+ * @property {string} playerId
+ * @property {number} ['ESPN Rank']
+ * @property {number} ['Sam Vecenie Rank']
+ * @property {number} ['Kevin O'Connor Rank']
+ * @property {number} ['Kyle Boone Rank']
+ * @property {number} ['Gary Parrish Rank']
+ */
+/**
+ * @typedef {Object} GameStats
+ * @property {string} playerId
+ * @property {string} League
+ * @property {number} GP
+ * @property {number} GS
+ * @property {number} MP
+ * @property {number} PTS
+ * @property {number} AST
+ * @property {number} TRB
+ * @property {number} BLK
+ * @property {number} STL
+ * @property {number} TOV
+ * @property {number} FG%
+ * @property {number} 3P%
+ * @property {number} FTP
+ */
+
+
+{/*These lines allow us to get all info from the JSON file*/}
 const draftData = data.bio
 const scoutData = data.scoutRankings
 const gameData = data.seasonLogs
@@ -76,7 +123,7 @@ function DraftBoard() {
     const [filteredData, setFilteredData] = useState(draftData);
     const [filterDialogOpen, setFilterDialogOpen] = useState(false);
 
-    {/*These are used for the filter by college*/}
+    {/*These lines are used for the filter by college*/}
     const [showCollegeSelect, setShowCollegeSelect] = useState(false);
     const [selectedCollege, setSelectedCollege] = useState('');
     const collegeOptions = [...new Set(draftData.map(player => player.currentTeam).filter(Boolean))]
@@ -173,13 +220,16 @@ function DraftBoard() {
                 anchor = "right"
                 open = {Boolean(selectedPlayer)}
                 onClose = {handleClose}
-                PaperProps = {{
-                    sx: {
-                        width: 350,
-                        p: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100vh',
+                slotProps = {{
+                    paper: {
+                        sx: {
+                            width: '350px',
+                            maxWidth: '150vw',
+                            p: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            height: '100vh',
+                        }
                     }
                 }}
 
@@ -204,7 +254,7 @@ function DraftBoard() {
                         />
 
 
-                        {/*this is player personal stats*/}
+                        {/*this is the player's personal stats*/}
                         <Typography sx={{ whiteSpace: 'pre-line', textDecoration: 'underline' }}>
                             <strong>{'\nPlayer Stats'}</strong>
                         </Typography>
