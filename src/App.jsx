@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-
+{/*These are the definitions of the variables (meant to remove weak warnings)*/}
 /**
  * @typedef {Object} Player
  * @property {string} playerId
@@ -78,7 +78,7 @@ const calculateAge = (birthDate) => {
     return age
 }
 
-
+{/*Main app function*/}
 function App() {
 
   return (
@@ -88,7 +88,7 @@ function App() {
   )
 }
 
-
+{/*Function that holds our logic*/}
 function DraftBoard() {
     {/*These are used for all clicking functionalities*/}
     const [selectedPlayer, setSelectedPlayer] = useState(null);
@@ -160,7 +160,7 @@ function DraftBoard() {
                 </Toolbar>
             </AppBar>
 
-            {/*Title as well as the Table with the Draft Prospects*/}
+            {/*Title as well as the table with the draft prospects*/}
             <Box sx={{ maxWidth: '800px', pb: 6, margin: '0 auto', mt: 3}}>
             <h1 style = {{textAlign : 'center'}}>2025 Draft Big Board</h1>
                 <TableContainer
@@ -216,6 +216,7 @@ function DraftBoard() {
 
             </Box>
 
+            {/*Block that holds our logic when you click on the player name*/}
             <Drawer
                 anchor = "right"
                 open = {Boolean(selectedPlayer)}
@@ -232,7 +233,6 @@ function DraftBoard() {
                         }
                     }
                 }}
-
             >
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2}}>
                     <Typography variant = "h6" component = "div">
@@ -302,6 +302,8 @@ function DraftBoard() {
                         <Typography>
                             {matchingPlayer?.["Gary Parrish Rank"] && (<Typography><strong>Gary Parrish Rank:</strong> {matchingPlayer["Gary Parrish Rank"]}</Typography>)}
                         </Typography>
+
+                        {/*Logic regarding the draft analysis (Predicted Draft Spot)*/}
                         <Typography sx ={{whiteSpace: 'pre-line'}}>
                             {prospectRanking != null && (<Typography sx = {{whiteSpace: 'pre-line'}}>
                                 {'\n'}
@@ -379,6 +381,7 @@ function DraftBoard() {
                         ) : (<Typography> No game stats available</Typography>)
                         }
 
+                        {/*Scouting Reports*/}
                         <Typography sx={{ whiteSpace: 'pre-line', textDecoration: 'underline' }}>
                             <strong>{'\nScouting Reports'}</strong>
                         </Typography>
@@ -400,6 +403,7 @@ function DraftBoard() {
                         ) : (<Typography> No scouting reports available</Typography>)
                         }
 
+                        {/*Spacing to make the drawer look better*/}
                         <Typography sx={{ whiteSpace: 'pre-line', textDecoration: 'underline' }}>
                             <strong>{'\n\n'}</strong>
                         </Typography>
@@ -487,6 +491,7 @@ function DraftBoard() {
                         </Box>
                     )}
 
+                    {/*Functionality for filtering by college*/}
                     {showCollegeSelect && (
                         <Box sx = {{width: '300px', maxWidth: '100%'}}>
                             <Autocomplete
@@ -500,6 +505,7 @@ function DraftBoard() {
                         </Box>
                     )}
 
+                    {/*Functionality for filtering by league*/}
                     {showLeagueSelect && (
                         <Box sx = {{width: '300px', maxWidth: '100%'}}>
                             <TextField
