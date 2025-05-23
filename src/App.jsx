@@ -107,6 +107,16 @@ function DraftBoard() {
     {/*Used for the custom player analysis (top 5 pick, late first rounder, etc.)*/}
     const prospectRanking = rankingValues.length > 0 ? rankingValues.reduce((sum, val) => sum + val) / rankingValues.length : null
 
+    {/*These are used to determine if the outlets are high or low on a prospect*/}
+    const getAssessment = (outletRank, averageRank) => {
+        if (outletRank === null || isNaN(outletRank) || averageRank === null) return '';
+        const difference = outletRank - averageRank;
+
+        if (difference <= -3) return ' (high on prospect)';
+        if (difference >= 3) return ' (low on prospect)';
+        return '';
+    }
+
     {/*These are used for creating a custom scouting report*/}
     const [customReports, setCustomReports] = useState([])
     const [addDialogOpen, setAddDialogOpen] = useState(false)
@@ -132,6 +142,7 @@ function DraftBoard() {
     const [showLeagueSelect, setShowLeagueSelect] = useState(false);
     const [selectedLeagueType, setSelectedLeagueType] = useState('');
 
+    {/*These are used to determine if the outlets are high or low on a prospect*/}
 
 
     return (
@@ -288,19 +299,29 @@ function DraftBoard() {
                         {matchingPlayer ? (
                             <>
                         <Typography>
-                            {matchingPlayer?.["ESPN Rank"] && (<Typography><strong>ESPN Rank:</strong> {matchingPlayer["ESPN Rank"]}</Typography>)}
+                            {matchingPlayer?.["ESPN Rank"] && (<Typography><strong>ESPN Rank:</strong> {matchingPlayer["ESPN Rank"]}
+                                {getAssessment(matchingPlayer["ESPN Rank"], prospectRanking)}
+                            </Typography>)}
                         </Typography>
                         <Typography>
-                            {matchingPlayer?.["Sam Vecenie Rank"] && (<Typography><strong>Sam Vecenie Rank:</strong> {matchingPlayer["Sam Vecenie Rank"]}</Typography>)}
+                            {matchingPlayer?.["Sam Vecenie Rank"] && (<Typography><strong>Sam Vecenie Rank:</strong> {matchingPlayer["Sam Vecenie Rank"]}
+                                {getAssessment(matchingPlayer["Sam Vecenie Rank"], prospectRanking)}
+                            </Typography>)}
                         </Typography>
                         <Typography>
-                            {matchingPlayer?.["Kevin O'Connor Rank"] && (<Typography><strong>Kevin O'Connor Rank:</strong> {matchingPlayer["Kevin O'Connor Rank"]}</Typography>)}
+                            {matchingPlayer?.["Kevin O'Connor Rank"] && (<Typography><strong>Kevin O'Connor Rank:</strong> {matchingPlayer["Kevin O'Connor Rank"]}
+                                {getAssessment(matchingPlayer["Kevin O'Connor Rank"], prospectRanking)}
+                            </Typography>)}
                         </Typography>
                         <Typography>
-                            {matchingPlayer?.["Kyle Boone Rank"] && (<Typography><strong>Kyle Boone Rank:</strong> {matchingPlayer["Kyle Boone Rank"]}</Typography>)}
+                            {matchingPlayer?.["Kyle Boone Rank"] && (<Typography><strong>Kyle Boone Rank:</strong> {matchingPlayer["Kyle Boone Rank"]}
+                                {getAssessment(matchingPlayer["Kyle Boone Rank"], prospectRanking)}
+                            </Typography>)}
                         </Typography>
                         <Typography>
-                            {matchingPlayer?.["Gary Parrish Rank"] && (<Typography><strong>Gary Parrish Rank:</strong> {matchingPlayer["Gary Parrish Rank"]}</Typography>)}
+                            {matchingPlayer?.["Gary Parrish Rank"] && (<Typography><strong>Gary Parrish Rank:</strong> {matchingPlayer["Gary Parrish Rank"]}
+                                {getAssessment(matchingPlayer["Gary Parrish Rank"], prospectRanking)}
+                            </Typography>)}
                         </Typography>
 
                         {/*Logic regarding the draft analysis (Predicted Draft Spot)*/}
